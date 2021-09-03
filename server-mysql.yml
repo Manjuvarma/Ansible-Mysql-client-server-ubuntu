@@ -3,30 +3,41 @@
   hosts: db
   become: yes
   become_method: sudo
-  remote_user: ubuntu
+  remote_user: osiuser
   tasks:
     - name: Check if MySQL is already installed.
       stat: path=/etc/init.d/mysql
       register: mysql_installed
 
+ 
+
     - name: Update apt cache if MySQL is not yet installed.
       apt: update_cache=yes
-      when: not mysql_installed.stat.exists
+
+ 
 
     - name: install MYSQL database
       apt: name=mysql-server state=latest
-      
+
+ 
+
     - name: install python mysql bindings
       apt: name=python-mysqldb state=latest
-      
+
+ 
+
     - name: Install the MySQL-python module
       apt: name=python3-mysqldb state=latest
-      
+
+ 
+
     - name: Install python3-pymysql library
       apt:
          name: python3-pymysql
          state: present
-        
+
+ 
+
     - name: Change the authentication plugin of MySQL root user to mysql_native_password
       shell: mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password"WHERE user="root" AND host="localhost"'
     - name: Flush Privileges
@@ -40,42 +51,111 @@
         password: 'osi123'
         state: present
 
+ 
+
+    - name: create mysql database
+      mysql_db:
+        login_user: root
+        login_password: osi123
+        name: 'Sahithi,Abhinav,Sidharth,Azhar,Devender,Raj,Chaitanya'
+        state: present
+
+ 
+
     - name: Create database user sahithi
       mysql_user:
         login_user: root
         login_password: osi123
         name: Sahithi
-        password: sahithi123
+        password: osi123
         priv: '*.*:ALL,GRANT'
         host: '%'
         state: present
+
+ 
 
     - name: Create database user abhinav
       mysql_user:
         login_user: root
         login_password: osi123
         name: Abhinav
-        password: abhinav123
+        password: osi123
         priv: '*.*:ALL,GRANT'
         host: '%'
         state: present
-    
+
+ 
+
     - name: Create database user sidharth
       mysql_user:
         login_user: root
         login_password: osi123
         name: Sidharth
         password: sidharthi123
-        priv: '*.*:ALL,GRANT'
+        priv: 'Sidharth.*:ALL,GRANT'
         host: '%'
         state: present
-    
+
+ 
+
+    - name: Create database user Azhar
+      mysql_user:
+        login_user: root
+        login_password: osi123
+        name: Azhar
+        password: azhar123
+        priv: 'Azhar.*:ALL,GRANT'
+        host: '%'
+        state: present
+
+ 
+
+    - name: Create database user Devender
+      mysql_user:
+        login_user: root
+        login_password: osi123
+        name: Devender
+        password: devender123
+        priv: 'Devender.*:ALL,GRANT'
+        host: '%'
+        state: present
+
+ 
+
+    - name: Create database user Raj
+      mysql_user:
+        login_user: root
+        login_password: osi123
+        name: Raj
+        password: raj123
+        priv: 'Raj.*:ALL,GRANT'
+        host: '%'
+        state: present
+
+ 
+
+    - name: Create database user Chaitanya
+      mysql_user:
+        login_user: root
+        login_password: osi123
+        name: Chaitanya
+        password: chaitanya123
+        priv: 'Chaitanya.*:ALL,GRANT'
+        host: '%'
+        state: present
+
+ 
+
     - name: change file
       shell: cp -rf mysqld.cnf /etc/mysql/mysql.conf.d/
-    
+
+ 
+
     - name: restart mysql
       shell: service mysql restart
-      
+
+ 
+
     - name: remove file
-      shell: rm -rf /home/ubuntu/mysqld.cnf
+      shell: rm -rf /home/osiuser/mysqld.cnf
         
